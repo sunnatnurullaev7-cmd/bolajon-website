@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bolajon - Nutqni rivojlantirish{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .baloo { font-family: 'Baloo 2', cursive; }
+        .bubble { border-radius: 24px; }
+        .bubble-lg { border-radius: 32px; }
+        .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .shadow-hover:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.12); transform: translateY(-4px); }
+        .wiggle:hover { animation: wiggle 0.5s ease-in-out; }
+        @keyframes wiggle {
+            0%,100% { transform: rotate(0deg) }
+            25% { transform: rotate(-2deg) scale(1.02) }
+            75% { transform: rotate(2deg) scale(1.02) }
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0) }
+            50% { transform: translateY(-10px) }
+        }
+        .float { animation: float 3s ease-in-out infinite; }
+        .audio-btn { transition: all 0.2s; }
+        .audio-btn:active { transform: scale(0.9); }
+        /* scrollbar hide */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-[#FFF9F0] min-h-screen text-gray-800">
+    {% if user.is_staff %}
+    <div class="bg-[#FFE66D] border-b-2 border-[#2D3436] text-[#2D3436] text-xs font-bold py-2 px-4 flex justify-between items-center sticky top-0 z-[60]">
+        <div class="flex items-center gap-2">
+            <span class="bg-[#2D3436] text-white px-2 py-1 rounded-full">ADMIN MODE</span>
+            <span>Siz adminsiz - saytdagi barcha matn, rasm, ovozni tahrirlay olasiz!</span>
+        </div>
+        <div class="flex gap-2">
+            <a href="/admin/" class="bg-[#2D3436] text-white px-3 py-1 bubble text-xs hover:bg-black">Admin Panelga o'tish</a>
+            <a href="/admin/core/letter/" class="bg-white px-3 py-1 bubble text-xs">Harflarni tahrirlash</a>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-3">
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="flex items-center gap-3">
+                    <div class="w-12 h-12 bubble bg-gradient-to-br from-[#FF6B6B] to-[#FF8E53] flex items-center justify-center text-white text-2xl font-bold baloo shadow-soft">B</div>
+                    <div>
+                        <h1 class="baloo text-2xl font-extrabold leading-none text-[#2D3436]">BOLAJON</h1>
+                        <p class="text-xs text-gray-500 font-bold tracking-widest">NUTQ ACADEMIYASI</p>
+                    </div>
+                </a>
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-2">
+                    <a href="{% url 'home' %}" class="px-4 py-2 bubble bg-gray-100 hover:bg-[#FF6B6B] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-house mr-1"></i> Bosh sahifa</a>
+                    <a href="{% url 'letter_list' %}" class="px-4 py-2 bubble bg-[#FFE5EC] text-[#FF6B6B] hover:bg-[#FF6B6B] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-font mr-1"></i> Harflar</a>
+                    <a href="{% url 'number_list' %}" class="px-4 py-2 bubble bg-[#D9F8F2] text-[#1ABC9C] hover:bg-[#1ABC9C] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-hashtag mr-1"></i> Raqamlar</a>
+                    <a href="{% url 'animal_list' %}" class="px-4 py-2 bubble bg-[#FFF2CC] text-[#E67E22] hover:bg-[#E67E22] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-paw mr-1"></i> Hayvonlar</a>
+                    <a href="{% url 'conversation_list' %}" class="px-4 py-2 bubble bg-[#E5D9FF] text-[#8E44AD] hover:bg-[#8E44AD] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-comments mr-1"></i> So'zlashuv</a>
+                    <a href="{% url 'color_list' %}" class="px-4 py-2 bubble bg-[#D6EFFF] text-[#3498DB] hover:bg-[#3498DB] hover:text-white transition font-bold text-sm"><i class="fa-solid fa-palette mr-1"></i> Ranglar</a>
+                </nav>
+                <!-- Admin & Mobile -->
+                <div class="flex items-center gap-2">
+                    <a href="/admin/" class="hidden sm:flex px-4 py-2 bubble bg-[#2D3436] text-white font-bold text-sm hover:bg-black transition"><i class="fa-solid fa-user-gear mr-2"></i> Admin</a>
+                    <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 bubble bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="lg:hidden hidden pb-4 grid grid-cols-2 gap-2">
+                <a href="{% url 'home' %}" class="px-4 py-3 bubble bg-gray-100 font-bold text-center"><i class="fa-solid fa-house mr-1"></i> Bosh sahifa</a>
+                <a href="{% url 'letter_list' %}" class="px-4 py-3 bubble bg-[#FFE5EC] text-[#FF6B6B] font-bold text-center">Harflar</a>
+                <a href="{% url 'number_list' %}" class="px-4 py-3 bubble bg-[#D9F8F2] text-[#1ABC9C] font-bold text-center">Raqamlar</a>
+                <a href="{% url 'animal_list' %}" class="px-4 py-3 bubble bg-[#FFF2CC] text-[#E67E22] font-bold text-center">Hayvonlar</a>
+                <a href="{% url 'conversation_list' %}" class="px-4 py-3 bubble bg-[#E5D9FF] text-[#8E44AD] font-bold text-center">So'zlashuv</a>
+                <a href="{% url 'color_list' %}" class="px-4 py-3 bubble bg-[#D6EFFF] text-[#3498DB] font-bold text-center">Ranglar</a>
+                <a href="/admin/" class="col-span-2 px-4 py-3 bubble bg-[#2D3436] text-white font-bold text-center"><i class="fa-solid fa-user-gear mr-2"></i> Admin Panel</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 bg-white border-t-4 border-[#FFE66D]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bubble bg-gradient-to-br from-[#FF6B6B] to-[#FF8E53] flex items-center justify-center text-white text-xl font-bold baloo">B</div>
+                        <span class="baloo text-xl font-extrabold">BOLAJON</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">Bolajonlar nutqini rivojlantirish uchun zamonaviy platforma. Harflar, raqamlar, hayvonlar, ranglar va so'zlashuv mashqlari - barchasi bitta joyda, admin tomonidan boshqariladi.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 baloo text-lg">Bo'limlar</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="{% url 'letter_list' %}" class="hover:text-[#FF6B6B]">Harflar alifbosi</a></li>
+                        <li><a href="{% url 'number_list' %}" class="hover:text-[#1ABC9C]">Raqamlar olami</a></li>
+                        <li><a href="{% url 'animal_list' %}" class="hover:text-[#E67E22]">Hayvonlar</a></li>
+                        <li><a href="{% url 'conversation_list' %}" class="hover:text-[#8E44AD]">So'zlashuv</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 baloo text-lg">Admin uchun</h4>
+                    <p class="text-sm text-gray-500 mb-3">Barcha rasmlar, ovozlar va matnlar admin panel orqali kiritiladi.</p>
+                    <a href="/admin/" class="inline-block px-5 py-2 bubble bg-[#2D3436] text-white text-sm font-bold"><i class="fa-solid fa-arrow-right mr-2"></i> Admin ga kirish</a>
+                    <div class="mt-4 flex gap-2 text-2xl">
+                        <span>🌈</span><span>📚</span><span>🦁</span><span>🔤</span><span>🎨</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t text-center text-xs text-gray-400">
+                © 2024 Bolajon Nutq Akademiyasi. Barcha huquqlar bolajonlar uchun! Made with ❤️ in Samarkand.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio player global -->
+    <div id="audio-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#2D3436] text-white px-6 py-3 bubble shadow-2xl hidden items-center gap-3 z-50">
+        <i class="fa-solid fa-volume-high animate-pulse"></i>
+        <span class="text-sm font-bold">Ovoz ijro etilmoqda...</span>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Universal audio play function
+        function playAudio(url) {
+            if(!url) return;
+            const toast = document.getElementById('audio-toast');
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            const audio = new Audio(url);
+            audio.play();
+            audio.onended = () => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            };
+            audio.onerror = () => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            };
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

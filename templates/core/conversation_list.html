@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}So'zlashuv - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-start mb-6">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bubble bg-[#8E44AD] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-comments"></i></div>
+        <div>
+            <h1 class="baloo text-3xl font-extrabold">Chiroyli So'zlashuv</h1>
+            <p class="text-gray-500 text-sm">Kundalik hayotda kerakli iboralarni ovoz bilan o'rganamiz</p>
+        </div>
+    </div>
+    {% if user.is_staff %}
+    <div class="flex flex-col gap-2"><a href="/admin/core/conversationtopic/" class="px-3 py-2 bubble bg-[#8E44AD] text-white text-xs font-bold">⚙️ Mavzularni tahrirlash</a><a href="/admin/core/phrase/" class="px-3 py-2 bubble bg-[#2D3436] text-white text-xs font-bold">Iboralarni tahrirlash</a></div>
+    {% endif %}
+</div>
+
+{% if topics %}
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for topic in topics %}
+    <a href="{% url 'conversation_detail' topic.slug %}" class="bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition border-l-8" style="border-color: {{ topic.color }}">
+        <div class="flex justify-between items-start mb-3">
+            <div class="w-12 h-12 bubble flex items-center justify-center text-xl" style="background: {{ topic.color }}">{{ topic.icon|default:"💬" }}</div>
+            <span class="px-2 py-1 bg-gray-100 bubble text-xs font-bold">{{ topic.phrases.count }} ibora</span>
+        </div>
+        <h3 class="baloo text-xl font-extrabold mb-1">{{ topic.title }}</h3>
+        <p class="text-sm text-gray-500 line-clamp-2">{{ topic.description }}</p>
+        <div class="mt-4 flex items-center gap-2 text-[#8E44AD] font-bold text-sm">O'rganish <i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bubble-lg bg-white p-10 text-center shadow-soft">
+    <div class="text-5xl mb-4">💬</div>
+    <h3 class="baloo text-2xl font-bold mb-2">Hali mavzular qo'shilmagan</h3>
+    <p class="text-gray-500 text-sm mb-4">Admin paneldan so'zlashuv mavzulari va iboralar qo'shing.</p>
+    <a href="/admin/core/conversationtopic/add/" class="px-6 py-2 bubble bg-[#8E44AD] text-white font-bold inline-block">Mavzu qo'shish</a>
+</div>
+{% endif %}
+{% endblock %}

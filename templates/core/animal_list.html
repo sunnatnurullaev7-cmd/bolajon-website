@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Hayvonlar - Bolajon{% endblock %}
+{% block content %}
+<div class="flex flex-col lg:flex-row justify-between gap-4 mb-6">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bubble bg-[#F39C12] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-paw"></i></div>
+        <div>
+            <h1 class="baloo text-3xl font-extrabold">Hayvonlar Dunyosi</h1>
+            <p class="text-gray-500 text-sm">{% if current_category %}{{ current_category.name }}{% else %}Barcha hayvonlar{% endif %} - rasm va ovozini eshit!</p>
+            {% if user.is_staff %}<div class="mt-2 flex gap-2"><a href="/admin/core/animal/" class="text-xs bg-[#F39C12] text-white px-2 py-1 bubble">⚙️ Hayvonlarni tahrirlash</a><a href="/admin/core/animalcategory/" class="text-xs bg-[#2D3436] text-white px-2 py-1 bubble">Kategoriyalarni tahrirlash</a></div>{% endif %}
+        </div>
+    </div>
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+        <a href="{% url 'animal_list' %}" class="px-4 py-2 bubble font-bold text-sm whitespace-nowrap {% if not current_category %}bg-[#2D3436] text-white{% else %}bg-white shadow-soft{% endif %}">Barchasi</a>
+        {% for cat in categories %}
+        <a href="{% url 'animal_list_by_category' cat.slug %}" class="px-4 py-2 bubble font-bold text-sm whitespace-nowrap flex items-center gap-2 {% if current_category.slug == cat.slug %}bg-[#2D3436] text-white{% else %}bg-white shadow-soft{% endif %}">
+            <span>{{ cat.icon }}</span> {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% if animals %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for animal in animals %}
+    <a href="{% url 'animal_detail' animal.pk %}" class="group bubble-lg bg-white overflow-hidden shadow-soft hover:shadow-hover transition">
+        <div class="relative h-48 overflow-hidden">
+            {% if animal.image %}
+            <img src="{{ animal.image.url }}" alt="{{ animal.name }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gray-100 text-5xl">🐾</div>
+            {% endif %}
+            <div class="absolute top-3 left-3 px-3 py-1 bubble bg-white/90 backdrop-blur text-xs font-bold flex items-center gap-1"><span>{{ animal.category.icon }}</span> {{ animal.category.name }}</div>
+            {% if animal.audio_sound %}
+            <div class="absolute top-3 right-3 w-8 h-8 bubble bg-[#2D3436] text-white flex items-center justify-center text-xs"><i class="fa-solid fa-volume-high"></i></div>
+            {% endif %}
+        </div>
+        <div class="p-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="baloo text-xl font-extrabold">{{ animal.name }}</h3>
+                    {% if animal.name_en %}<p class="text-xs text-gray-400">{{ animal.name_en }}</p>{% endif %}
+                </div>
+                <span class="w-8 h-8 bubble flex items-center justify-center text-white text-xs font-bold" style="background: {{ animal.color }}"><i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ animal.description|default:"" }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bubble-lg bg-white p-10 text-center shadow-soft">
+    <div class="text-5xl mb-4">🐶</div>
+    <h3 class="baloo text-2xl font-bold mb-2">Hali hayvonlar qo'shilmagan</h3>
+    <p class="text-gray-500 text-sm mb-4">Admin panelda avval kategoriya, keyin hayvon qo'shing.</p>
+    <a href="/admin/core/animalcategory/add/" class="px-4 py-2 bubble bg-[#F39C12] text-white font-bold inline-block mr-2">Kategoriya qo'shish</a>
+    <a href="/admin/core/animal/add/" class="px-4 py-2 bubble bg-[#2D3436] text-white font-bold inline-block">Hayvon qo'shish</a>
+</div>
+{% endif %}
+{% endblock %}

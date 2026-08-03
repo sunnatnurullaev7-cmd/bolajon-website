@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ letter.char }} harfi - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+<a href="{% url 'letter_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bubble bg-white shadow-soft text-sm font-bold hover:bg-gray-50"><i class="fa-solid fa-arrow-left"></i> Harflarga qaytish</a>
+{% if user.is_staff %}
+<a href="/admin/core/letter/{{ letter.pk }}/change/" class="px-5 py-2 bubble bg-[#FF6B6B] text-white text-sm font-bold shadow-soft"><i class="fa-solid fa-pen mr-2"></i> Admin da tahrirlash - Rasm/Ovoz/Matn</a>
+{% endif %}
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+    <!-- Asosiy harf karta -->
+    <div class="lg:col-span-2">
+        <div class="bubble-lg bg-white shadow-soft overflow-hidden">
+            <div class="h-3" style="background: {{ letter.color }}"></div>
+            <div class="p-6 lg:p-8">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-40 h-40 bubble-lg flex items-center justify-center text-8xl font-extrabold baloo text-white shadow-soft float" style="background: {{ letter.color }}">{{ letter.char }}</div>
+                        <button onclick="playAudio('{{ letter.audio.url }}')" class="mt-4 w-full py-3 bubble bg-[#2D3436] text-white font-bold flex items-center justify-center gap-2 hover:bg-black transition audio-btn">
+                            <i class="fa-solid fa-volume-high"></i> Eshitish
+                        </button>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <h1 class="baloo text-5xl font-extrabold mb-2">{{ letter.name }}</h1>
+                        <p class="text-gray-500 mb-6">{{ letter.description|default:"Bu harfni qayta-qayta eshitib, o'zingiz ham ayting!" }}</p>
+                        
+                        {% if letter.example_word %}
+                        <div class="bubble bg-[#FFF9F0] p-4 border-2 border-dashed border-[#FFE5EC]">
+                            <p class="text-xs font-bold text-gray-400 tracking-widest mb-2">MISOL SO'Z</p>
+                            <div class="flex items-center gap-4">
+                                {% if letter.example_image %}
+                                <img src="{{ letter.example_image.url }}" class="w-20 h-20 bubble object-cover" alt="{{ letter.example_word }}">
+                                {% endif %}
+                                <div>
+                                    <h3 class="baloo text-2xl font-extrabold">{{ letter.example_word }}</h3>
+                                    {% if letter.example_audio %}
+                                    <button onclick="playAudio('{{ letter.example_audio.url }}')" class="mt-2 px-4 py-1.5 bubble bg-[#FF6B6B] text-white text-sm font-bold"><i class="fa-solid fa-play mr-1"></i> {{ letter.example_word }} ni eshitish</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if letter.image %}
+                        <div class="mt-4">
+                            <img src="{{ letter.image.url }}" alt="{{ letter.char }}" class="w-full max-w-xs bubble-lg object-cover">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigatsiya -->
+        <div class="grid grid-cols-2 gap-4 mt-4">
+            {% if prev_letter %}
+            <a href="{% url 'letter_detail' prev_letter.pk %}" class="bubble-lg bg-white p-4 shadow-soft flex items-center gap-3 hover:shadow-hover transition">
+                <div class="w-10 h-10 bubble bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></div>
+                <div><p class="text-xs text-gray-400">Oldingi</p><p class="font-bold baloo">{{ prev_letter.char }}</p></div>
+            </a>
+            {% else %}
+            <div></div>
+            {% endif %}
+            {% if next_letter %}
+            <a href="{% url 'letter_detail' next_letter.pk %}" class="bubble-lg bg-white p-4 shadow-soft flex items-center justify-end gap-3 hover:shadow-hover transition text-right">
+                <div><p class="text-xs text-gray-400">Keyingi</p><p class="font-bold baloo">{{ next_letter.char }}</p></div>
+                <div class="w-10 h-10 bubble bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Barcha harflar sidebar -->
+    <div class="bubble-lg bg-white p-5 shadow-soft h-fit">
+        <h3 class="baloo font-extrabold text-xl mb-4 flex items-center gap-2"><span class="w-8 h-8 bubble bg-[#FFE5EC] flex items-center justify-center text-[#FF6B6B] text-sm"><i class="fa-solid fa-list"></i></span> Barcha harflar</h3>
+        <div class="grid grid-cols-5 gap-2">
+            {% for l in all_letters %}
+            <a href="{% url 'letter_detail' l.pk %}" class="w-10 h-10 bubble flex items-center justify-center font-bold text-white text-sm transition {% if l.pk == letter.pk %}ring-4 ring-gray-900 ring-offset-2 scale-110{% else %}opacity-80 hover:opacity-100 hover:scale-105{% endif %}" style="background: {{ l.color }}">{{ l.char }}</a>
+            {% endfor %}
+        </div>
+        <div class="mt-6 p-4 bubble bg-[#FFF9F0] border">
+            <p class="font-bold text-sm mb-2">💡 Maslahat ota-onalar uchun:</p>
+            <p class="text-xs text-gray-600 leading-relaxed">Har kuni 2-3 harfni o'rgating. Harfni ko'rsating, ovozini eshittiring, boladan qaytarishini so'rang. Misol so'z bilan bog'lang: "{{ letter.char }} - {{ letter.example_word|default:'Olma' }}".</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

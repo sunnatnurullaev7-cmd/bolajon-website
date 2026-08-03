@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block title %}Bolajon - Bolalar nutqini rivojlantirish platformasi{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="relative overflow-hidden bubble-lg bg-gradient-to-br from-[#FF6B6B] via-[#FF8E53] to-[#FFE66D] p-6 lg:p-10 mb-8 shadow-soft">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 bubble-lg -mr-20 -mt-20"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 bubble-lg -ml-10 -mb-10"></div>
+    <div class="relative grid lg:grid-cols-2 gap-8 items-center">
+        <div class="text-white">
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur px-4 py-2 bubble text-sm font-bold mb-4">
+                <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> YANGI - BOLALAR UCHUN
+            </div>
+            <h1 class="baloo text-4xl lg:text-6xl font-extrabold leading-tight mb-4">Salom, <span class="text-white/90 underline decoration-wavy decoration-white/50">Bolajon!</span> 👋</h1>
+            <p class="text-white/90 text-lg lg:text-xl leading-relaxed mb-6 font-medium">Harflarni o'rganamiz, raqamlarni sanaymiz, hayvonlar bilan tanishamiz va chiroyli gapirishni o'rganamiz!</p>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'letter_list' %}" class="px-6 py-3 bg-white text-[#FF6B6B] bubble font-extrabold shadow-soft hover:shadow-hover transition wiggle inline-flex items-center gap-2"><i class="fa-solid fa-play"></i> Boshlash</a>
+                <a href="#bolimlar" class="px-6 py-3 bg-[#2D3436] text-white bubble font-bold hover:bg-black transition">Bo'limlarni ko'rish</a>
+            </div>
+            <div class="mt-6 flex gap-6 text-white/90 text-sm font-bold">
+                <span><i class="fa-solid fa-font mr-1"></i> {{ letters_count }} Harf</span>
+                <span><i class="fa-solid fa-hashtag mr-1"></i> {{ numbers_count }} Raqam</span>
+                <span><i class="fa-solid fa-paw mr-1"></i> {{ animals_count }} Hayvon</span>
+                <span><i class="fa-solid fa-comments mr-1"></i> {{ phrases_count }} So'z</span>
+            </div>
+        </div>
+        <div class="relative hidden lg:block">
+            <div class="float">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bubble bg-white p-4 shadow-soft text-center"><div class="text-3xl mb-1">🔤</div><div class="font-bold text-xs">Harflar</div></div>
+                    <div class="bubble bg-white p-4 shadow-soft text-center mt-6"><div class="text-3xl mb-1">🔢</div><div class="font-bold text-xs">Raqamlar</div></div>
+                    <div class="bubble bg-white p-4 shadow-soft text-center"><div class="text-3xl mb-1">🦁</div><div class="font-bold text-xs">Hayvonlar</div></div>
+                    <div class="bubble bg-white p-4 shadow-soft text-center"><div class="text-3xl mb-1">🎨</div><div class="font-bold text-xs">Ranglar</div></div>
+                    <div class="bubble bg-white p-4 shadow-soft text-center mt-6"><div class="text-3xl mb-1">💬</div><div class="font-bold text-xs">So'zlashuv</div></div>
+                    <div class="bubble bg-white p-4 shadow-soft text-center"><div class="text-3xl mb-1">🎧</div><div class="font-bold text-xs">Ovozlar</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BO'LIMLAR -->
+<div id="bolimlar" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+    <!-- Harflar -->
+    <a href="{% url 'letter_list' %}" class="group bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition-all duration-300 border-4 border-[#FFE5EC]">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-14 h-14 bubble bg-[#FF6B6B] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-font"></i></div>
+            <span class="px-3 py-1 bg-[#FFE5EC] text-[#FF6B6B] bubble text-xs font-extrabold">{{ letters_count }} ta</span>
+        </div>
+        <h3 class="baloo text-2xl font-extrabold mb-2">Harflar Olami</h3>
+        <p class="text-gray-500 text-sm mb-4">A dan Z gacha harflarni rasm va ovoz bilan o'rganamiz. Har bir harf uchun misollar!</p>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+            {% for l in letters %}
+            <span class="w-8 h-8 bubble flex items-center justify-center font-extrabold text-sm text-white" style="background: {{ l.color }}">{{ l.char }}</span>
+            {% empty %}
+            <span class="text-xs text-gray-400">Tez kunda admin tomonidan qo'shiladi</span>
+            {% endfor %}
+        </div>
+        <div class="flex items-center gap-2 text-[#FF6B6B] font-bold text-sm">O'rganish <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i></div>
+    </a>
+
+    <!-- Raqamlar -->
+    <a href="{% url 'number_list' %}" class="group bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition border-4 border-[#D9F8F2]">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-14 h-14 bubble bg-[#1ABC9C] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-hashtag"></i></div>
+            <span class="px-3 py-1 bg-[#D9F8F2] text-[#1ABC9C] bubble text-xs font-extrabold">{{ numbers_count }} ta</span>
+        </div>
+        <h3 class="baloo text-2xl font-extrabold mb-2">Raqamlar Olami</h3>
+        <p class="text-gray-500 text-sm mb-4">1 dan 10 gacha raqamlarni sanashni, yozishni va talaffuz qilishni o'rganamiz.</p>
+        <div class="flex flex-wrap gap-1.5 mb-4">
+            {% for n in numbers %}
+            <span class="w-8 h-8 bubble flex items-center justify-center font-extrabold text-sm text-white" style="background: {{ n.color }}">{{ n.value }}</span>
+            {% empty %}
+            <span class="text-xs text-gray-400">Admin tomonidan qo'shiladi</span>
+            {% endfor %}
+        </div>
+        <div class="flex items-center gap-2 text-[#1ABC9C] font-bold text-sm">Sanashni boshlash <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i></div>
+    </a>
+
+    <!-- Hayvonlar -->
+    <a href="{% url 'animal_list' %}" class="group bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition border-4 border-[#FFF2CC]">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-14 h-14 bubble bg-[#F39C12] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-paw"></i></div>
+            <span class="px-3 py-1 bg-[#FFF2CC] text-[#E67E22] bubble text-xs font-extrabold">{{ animals_count }} ta</span>
+        </div>
+        <h3 class="baloo text-2xl font-extrabold mb-2">Hayvonlar Dunyosi</h3>
+        <p class="text-gray-500 text-sm mb-4">Uy hayvonlari va yovvoyi hayvonlar. Ularning ovozi, yashash joyi va qiziqarli faktlar!</p>
+        <div class="flex gap-2 mb-4 text-2xl">
+            <span>🐶</span><span>🐱</span><span>🦁</span><span>🐘</span><span>🐰</span>
+        </div>
+        <div class="flex items-center gap-2 text-[#E67E22] font-bold text-sm">Hayvonlarni ko'rish <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i></div>
+    </a>
+
+    <!-- So'zlashuv -->
+    <a href="{% url 'conversation_list' %}" class="group bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition border-4 border-[#E5D9FF] md:col-span-2 lg:col-span-2">
+        <div class="flex gap-4">
+            <div class="w-14 h-14 bubble bg-[#8E44AD] text-white flex items-center justify-center text-2xl flex-shrink-0"><i class="fa-solid fa-comments"></i></div>
+            <div class="flex-1">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="baloo text-2xl font-extrabold">Chiroyli So'zlashuv</h3>
+                    <span class="px-3 py-1 bg-[#E5D9FF] text-[#8E44AD] bubble text-xs font-extrabold">{{ phrases_count }} ibora</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Salomlashish, tanishish, yordam so'rash, rahmat aytish - bolajonlar nutqini rivojlantirish uchun eng kerakli iboralar ovoz bilan!</p>
+                <div class="flex flex-wrap gap-2 mb-3">
+                    {% for t in topics %}
+                    <span class="px-3 py-1 bubble bg-gray-100 text-xs font-bold">{{ t.icon }} {{ t.title }}</span>
+                    {% endfor %}
+                </div>
+                <div class="flex items-center gap-2 text-[#8E44AD] font-bold text-sm">Gapirishni o'rganish <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i></div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Ranglar -->
+    <a href="{% url 'color_list' %}" class="group bubble-lg bg-white p-6 shadow-soft hover:shadow-hover transition border-4 border-[#D6EFFF]">
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-14 h-14 bubble bg-[#3498DB] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-palette"></i></div>
+            <span class="px-3 py-1 bg-[#D6EFFF] text-[#3498DB] bubble text-xs font-extrabold">Ranglar</span>
+        </div>
+        <h3 class="baloo text-2xl font-extrabold mb-2">Sehrli Ranglar</h3>
+        <p class="text-gray-500 text-sm mb-4">Qizil, ko'k, yashil... ranglarni nomini aytish va atrofdagi narsalar bilan bog'lash.</p>
+        <div class="flex gap-1.5 mb-4">
+            {% for c in colors %}
+            <div class="w-7 h-7 bubble border-2 border-white shadow" style="background: {{ c.hex_code }}" title="{{ c.name }}"></div>
+            {% empty %}
+            <span class="text-xs text-gray-400">🌈 Ranglar admin tomonidan</span>
+            {% endfor %}
+        </div>
+        <div class="flex items-center gap-2 text-[#3498DB] font-bold text-sm">Ranglarni o'rganish <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i></div>
+    </a>
+</div>
+
+<!-- Kategoriyalar hayvonlar -->
+<section class="mb-10">
+    <h2 class="baloo text-3xl font-extrabold mb-5 flex items-center gap-3"><span class="w-10 h-10 bubble bg-[#FFE66D] flex items-center justify-center text-xl">🦁</span> Hayvonlar Kategoriyasi</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {% for cat in categories %}
+        <a href="{% url 'animal_list_by_category' cat.slug %}" class="bubble-lg p-5 text-center shadow-soft hover:shadow-hover transition wiggle" style="background: {{ cat.color }}">
+            <div class="text-4xl mb-2">{{ cat.icon|default:"🐾" }}</div>
+            <h4 class="font-extrabold baloo text-lg">{{ cat.name }}</h4>
+            <p class="text-xs opacity-70 mt-1">{{ cat.animals.count }} ta hayvon</p>
+        </a>
+        {% empty %}
+        <div class="col-span-full bubble-lg bg-white p-8 text-center text-gray-400">
+            <div class="text-4xl mb-3">🐾</div>
+            <p class="font-bold">Hayvon kategoriyalari admin tomonidan qo'shiladi</p>
+            <p class="text-sm mt-1">Admin panelga kirib kategoriya va hayvon qo'shing</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Qanday ishlaydi -->
+<section class="bubble-lg bg-[#2D3436] text-white p-6 lg:p-8 mb-8">
+    <h2 class="baloo text-3xl font-extrabold mb-6 text-center">Qanday ishlaydi? 🎯</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="text-center">
+            <div class="w-16 h-16 bubble bg-[#FF6B6B] mx-auto flex items-center justify-center text-2xl mb-3">1</div>
+            <h4 class="font-bold mb-2">Admin ma'lumot kiritadi</h4>
+            <p class="text-white/70 text-sm">Barcha harflar, raqamlar, hayvon rasmlari va ovozlari admin panel orqali yuklanadi.</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 bubble bg-[#1ABC9C] mx-auto flex items-center justify-center text-2xl mb-3">2</div>
+            <h4 class="font-bold mb-2">Bolajon ko'radi va eshitadi</h4>
+            <p class="text-white/70 text-sm">Chiroyli dizaynda rasmni ko'radi, ovozni eshitadi, qaytarib aytadi.</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 bubble bg-[#FFE66D] text-[#2D3436] mx-auto flex items-center justify-center text-2xl mb-3">3</div>
+            <h4 class="font-bold mb-2">Nutq rivojlanadi!</h4>
+            <p class="text-white/70 text-sm">Har kuni 10-15 daqiqa mashq bilan bolajon nutqi tez rivojlanadi.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

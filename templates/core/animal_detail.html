@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ animal.name }} - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+<a href="{% url 'animal_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bubble bg-white shadow-soft text-sm font-bold"><i class="fa-solid fa-arrow-left"></i> Hayvonlarga qaytish</a>
+{% if user.is_staff %}
+<a href="/admin/core/animal/{{ animal.pk }}/change/" class="px-5 py-2 bubble bg-[#F39C12] text-white text-sm font-bold shadow-soft"><i class="fa-solid fa-pen mr-2"></i> Tahrirlash - Rasm/2 ta Ovoz/Matn</a>
+{% endif %}
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="bubble-lg bg-white shadow-soft overflow-hidden">
+            <div class="relative h-72 lg:h-96">
+                {% if animal.image %}
+                <img src="{{ animal.image.url }}" alt="{{ animal.name }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-8xl">🐾</div>
+                {% endif %}
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                    <div class="flex items-end justify-between">
+                        <div class="text-white">
+                            <span class="px-3 py-1 bubble bg-white/20 backdrop-blur text-xs font-bold mb-2 inline-block">{{ animal.category.icon }} {{ animal.category.name }}</span>
+                            <h1 class="baloo text-4xl font-extrabold">{{ animal.name }}</h1>
+                            {% if animal.name_en %}<p class="opacity-80">{{ animal.name_en }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if user.is_staff %}
+                <div class="absolute top-3 left-3 bg-yellow-400 text-black px-2 py-1 bubble text-[10px] font-bold">ADMIN: Rasm {{ animal.image|yesno:"BOR,YO'Q" }}</div>
+                {% endif %}
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <button onclick="playAudio('{% if animal.audio_name %}{{ animal.audio_name.url }}{% endif %}')" class="bubble bg-[#FFE66D] p-3 text-center font-bold text-sm hover:scale-105 transition"><i class="fa-solid fa-volume-high block text-lg mb-1"></i> Nomini eshit
+                    {% if user.is_staff %}<br><span class="text-[10px]">{% if animal.audio_name %}✅ Bor{% else %}❌ Yo'q{% endif %}</span>{% endif %}
+                    </button>
+                    <button onclick="playAudio('{% if animal.audio_sound %}{{ animal.audio_sound.url }}{% endif %}')" class="bubble bg-[#FF6B6B] text-white p-3 text-center font-bold text-sm hover:scale-105 transition"><i class="fa-solid fa-music block text-lg mb-1"></i> Ovozini eshit
+                    {% if user.is_staff %}<br><span class="text-[10px]">{% if animal.audio_sound %}✅ Bor{% else %}❌ Yo'q{% endif %}</span>{% endif %}
+                    </button>
+                    <div class="bubble bg-gray-100 p-3 text-center"><p class="text-xs text-gray-500">Turi</p><p class="font-bold text-sm">{{ animal.category.get_type_display }}</p></div>
+                </div>
+
+                <div class="space-y-4">
+                    {% if animal.description %}
+                    <div class="bubble bg-[#FFF9F0] p-4">
+                        <h4 class="font-bold baloo flex items-center gap-2"><i class="fa-solid fa-circle-info text-[#F39C12]"></i> {{ animal.name }} haqida</h4>
+                        <p class="text-sm text-gray-600 mt-2 leading-relaxed">{{ animal.description }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        {% if animal.where_lives %}
+                        <div class="bubble bg-[#D6EFFF] p-4">
+                            <h4 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-house"></i> Qayerda yashaydi?</h4>
+                            <p class="text-sm mt-1">{{ animal.where_lives }}</p>
+                        </div>
+                        {% endif %}
+                        {% if animal.what_eats %}
+                        <div class="bubble bg-[#D9F8F2] p-4">
+                            <h4 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-utensils"></i> Nima yeydi?</h4>
+                            <p class="text-sm mt-1">{{ animal.what_eats }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if animal.interesting_fact %}
+                    <div class="bubble bg-[#FFF2CC] p-4 border-2 border-dashed border-[#F39C12]">
+                        <h4 class="font-bold baloo flex items-center gap-2">🌟 Qiziqarli fakt!</h4>
+                        <p class="text-sm mt-2">{{ animal.interesting_fact }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% if related %}
+        <div class="bubble-lg bg-white p-5 shadow-soft">
+            <h3 class="baloo font-extrabold text-xl mb-4">Yana {{ animal.category.name }}</h3>
+            <div class="space-y-3">
+                {% for rel in related %}
+                <a href="{% url 'animal_detail' rel.pk %}" class="flex items-center gap-3 p-2 bubble hover:bg-gray-50 transition">
+                    {% if rel.image %}
+                    <img src="{{ rel.image.url }}" class="w-14 h-14 bubble object-cover" alt="{{ rel.name }}">
+                    {% else %}
+                    <div class="w-14 h-14 bubble bg-gray-100 flex items-center justify-center">🐾</div>
+                    {% endif %}
+                    <div><p class="font-bold text-sm">{{ rel.name }}</p><p class="text-xs text-gray-400">{{ rel.category.name }}</p></div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="bubble-lg bg-[#2D3436] text-white p-5 mt-4">
+            <h4 class="baloo font-bold text-lg mb-3">Admin tahrirlash 💡</h4>
+            <p class="text-sm text-white/70 mb-3">Bu hayvonning barcha joyini admin da tahrirlay olasiz:</p>
+            <ul class="text-sm space-y-2 text-white/80 list-disc pl-4">
+                <li>Matnlar: nomi, tavsifi, qayerda yashaydi, nima yeydi</li>
+                <li>Rasm: kompyuterdan yuklang, eski avtomatik o'chadi</li>
+                <li>2 ta ovoz: 1) hayvon ovozi 2) nom talaffuzi</li>
+                <li>Internet shart emas - qo'lda!</li>
+            </ul>
+            {% if user.is_staff %}
+            <a href="/admin/core/animal/{{ animal.pk }}/change/" class="mt-4 inline-block w-full text-center py-2 bubble bg-white text-black font-bold text-sm">✏️ Hozir tahrirlash</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

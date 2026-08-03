@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ number.value }} raqami - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+<a href="{% url 'number_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bubble bg-white shadow-soft text-sm font-bold hover:bg-gray-50"><i class="fa-solid fa-arrow-left"></i> Raqamlarga qaytish</a>
+{% if user.is_staff %}
+<a href="/admin/core/number/{{ number.pk }}/change/" class="px-5 py-2 bubble bg-[#1ABC9C] text-white text-sm font-bold shadow-soft"><i class="fa-solid fa-pen mr-2"></i> Tahrirlash - Rasm/Ovoz/Matn</a>
+{% endif %}
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2">
+        <div class="bubble-lg bg-white shadow-soft overflow-hidden">
+            <div class="h-3" style="background: {{ number.color }}"></div>
+            <div class="p-6 lg:p-8">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="text-center">
+                        <div class="w-44 h-44 bubble-lg flex items-center justify-center text-8xl font-extrabold baloo text-white shadow-soft float" style="background: {{ number.color }}">{{ number.value }}</div>
+                        <button onclick="playAudio('{% if number.audio %}{{ number.audio.url }}{% endif %}')" class="mt-4 w-full py-3 bubble bg-[#2D3436] text-white font-bold flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-volume-high"></i> {{ number.word }}
+                        </button>
+                        {% if user.is_staff and not number.audio %}
+                        <p class="text-xs text-red-500 mt-2">🔇 Ovoz yo'q - Admin dan yuklang</p>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="baloo text-5xl font-extrabold mb-1">{{ number.value }} - {{ number.word|capfirst }}</h1>
+                        <p class="text-gray-500 mb-5">{{ number.description|default:"Keling sanaymiz!" }}</p>
+
+                        {% if number.count_image %}
+                        <div class="bubble bg-[#F0FFF4] p-4 border-2 border-dashed border-[#1ABC9C]">
+                            <p class="text-xs font-bold text-gray-400 tracking-widest mb-2">SANASH UCHUN RASM</p>
+                            <img src="{{ number.count_image.url }}" alt="{{ number.value }} ta" class="w-full max-w-sm bubble-lg object-cover mx-auto">
+                            <p class="text-center mt-3 font-bold">Mana {{ number.value }} ta!</p>
+                        </div>
+                        {% elif user.is_staff %}
+                        <div class="bubble bg-yellow-50 p-3 text-xs text-yellow-700 border border-yellow-200">⚠️ Miqdor rasmi yuklanmagan. Admin da yuklang.</div>
+                        {% endif %}
+
+                        {% if number.image %}
+                        <img src="{{ number.image.url }}" alt="{{ number.value }}" class="mt-4 w-full max-w-xs bubble-lg object-cover">
+                        {% endif %}
+
+                        <div class="mt-6">
+                            <p class="font-bold text-sm mb-2">Sanaymiz: </p>
+                            <div class="flex flex-wrap gap-2">
+                                {% for i in "12345678910"|make_list %}
+                                    {% if forloop.counter <= number.value %}
+                                    <span class="w-8 h-8 bubble flex items-center justify-center text-white font-bold" style="background: {{ number.color }}">●</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+            {% if prev_number %}
+            <a href="{% url 'number_detail' prev_number.pk %}" class="bubble-lg bg-white p-4 shadow-soft flex items-center gap-3">
+                <div class="w-10 h-10 bubble bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></div>
+                <div><p class="text-xs text-gray-400">Oldingi</p><p class="font-bold baloo">{{ prev_number.value }}</p></div>
+            </a>
+            {% endif %}
+            {% if next_number %}
+            <a href="{% url 'number_detail' next_number.pk %}" class="bubble-lg bg-white p-4 shadow-soft flex items-center justify-end gap-3 text-right ml-auto w-full">
+                <div><p class="text-xs text-gray-400">Keyingi</p><p class="font-bold baloo">{{ next_number.value }}</p></div>
+                <div class="w-10 h-10 bubble bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="bubble-lg bg-white p-5 shadow-soft h-fit">
+        <h3 class="baloo font-extrabold text-xl mb-4">Barcha raqamlar {% if user.is_staff %}<a href="/admin/core/number/" class="text-xs font-normal text-[#1ABC9C] ml-2">⚙️ Tahrirlash</a>{% endif %}</h3>
+        <div class="grid grid-cols-5 gap-2">
+            {% for n in all_numbers %}
+            <a href="{% url 'number_detail' n.pk %}" class="w-10 h-10 bubble flex items-center justify-center font-bold text-white {% if n.pk == number.pk %}ring-4 ring-gray-900 ring-offset-2{% endif %}" style="background: {{ n.color }}">{{ n.value }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

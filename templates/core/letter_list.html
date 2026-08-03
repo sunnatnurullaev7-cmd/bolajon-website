@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Harflar - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-start mb-6">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bubble bg-[#FF6B6B] text-white flex items-center justify-center text-2xl shadow-soft"><i class="fa-solid fa-font"></i></div>
+        <div>
+            <h1 class="baloo text-3xl font-extrabold">Harflar Alifbosi</h1>
+            <p class="text-gray-500 text-sm">Har bir harfni bosib, rasmi va ovozini eshiting</p>
+        </div>
+    </div>
+    {% if user.is_staff %}
+    <div class="flex flex-col gap-2">
+        <a href="/admin/core/letter/" class="px-4 py-2 bubble bg-[#FF6B6B] text-white text-xs font-bold">⚙️ Barchasini tahrirlash</a>
+        <a href="/admin/core/letter/add/" class="px-4 py-2 bubble bg-[#2D3436] text-white text-xs font-bold">+ Yangi harf qo'shish</a>
+    </div>
+    {% endif %}
+</div>
+
+{% if letters %}
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    {% for letter in letters %}
+    <a href="{% url 'letter_detail' letter.pk %}" class="group bubble-lg bg-white p-5 shadow-soft hover:shadow-hover transition text-center border-b-4" style="border-color: {{ letter.color }}">
+        <div class="w-20 h-20 mx-auto bubble flex items-center justify-center text-4xl font-extrabold baloo text-white mb-3 group-hover:scale-110 transition" style="background: {{ letter.color }}">{{ letter.char }}</div>
+        <h3 class="font-bold baloo">{{ letter.name }}</h3>
+        <p class="text-xs text-gray-400 mt-1">{{ letter.example_word }}</p>
+        {% if letter.audio %}
+        <div class="mt-2 inline-flex w-7 h-7 bubble bg-gray-100 items-center justify-center text-xs"><i class="fa-solid fa-volume-high"></i></div>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bubble-lg bg-white p-10 text-center shadow-soft">
+    <div class="text-5xl mb-4">🔤</div>
+    <h3 class="baloo text-2xl font-bold mb-2">Hali harflar qo'shilmagan</h3>
+    <p class="text-gray-500 text-sm mb-4">Admin panelga kiring va harflarni kiriting. Har bir harf uchun rasm va ovoz yuklashingiz mumkin.</p>
+    <a href="/admin/core/letter/add/" class="px-6 py-2 bubble bg-[#FF6B6B] text-white font-bold inline-block">Admin - Harf qo'shish</a>
+</div>
+{% endif %}
+{% endblock %}

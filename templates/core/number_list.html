@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Raqamlar - Bolajon{% endblock %}
+{% block content %}
+<div class="flex justify-between items-start mb-6">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bubble bg-[#1ABC9C] text-white flex items-center justify-center text-2xl shadow-soft"><i class="fa-solid fa-hashtag"></i></div>
+        <div>
+            <h1 class="baloo text-3xl font-extrabold">Raqamlar Olami</h1>
+            <p class="text-gray-500 text-sm">Raqamni bosib, sanashni o'rganing</p>
+        </div>
+    </div>
+    {% if user.is_staff %}
+    <div class="flex flex-col gap-2">
+        <a href="/admin/core/number/" class="px-4 py-2 bubble bg-[#1ABC9C] text-white text-xs font-bold">⚙️ Barchasini tahrirlash</a>
+        <a href="/admin/core/number/add/" class="px-4 py-2 bubble bg-[#2D3436] text-white text-xs font-bold">+ Yangi raqam</a>
+    </div>
+    {% endif %}
+</div>
+
+{% if numbers %}
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+    {% for num in numbers %}
+    <a href="{% url 'number_detail' num.pk %}" class="group bubble-lg bg-white p-5 shadow-soft hover:shadow-hover transition text-center border-b-4" style="border-color: {{ num.color }}">
+        <div class="w-24 h-24 mx-auto bubble-lg flex items-center justify-center text-5xl font-extrabold baloo text-white mb-3 group-hover:scale-110 transition" style="background: {{ num.color }}">{{ num.value }}</div>
+        <h3 class="font-bold baloo text-lg">{{ num.word|capfirst }}</h3>
+        <p class="text-xs text-gray-400">{{ num.value }} ta</p>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bubble-lg bg-white p-10 text-center shadow-soft">
+    <div class="text-5xl mb-4">🔢</div>
+    <h3 class="baloo text-2xl font-bold mb-2">Hali raqamlar qo'shilmagan</h3>
+    <p class="text-gray-500 text-sm mb-4">Admin paneldan raqamlar, rasmlar va ovozlar qo'shing.</p>
+    <a href="/admin/core/number/add/" class="px-6 py-2 bubble bg-[#1ABC9C] text-white font-bold inline-block">Raqam qo'shish</a>
+</div>
+{% endif %}
+{% endblock %}

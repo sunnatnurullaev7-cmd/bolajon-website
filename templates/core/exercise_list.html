@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Mashqlar - Bolajon{% endblock %}
+{% block content %}
+<div class="flex items-center gap-4 mb-6">
+    <div class="w-14 h-14 bubble bg-[#1ABC9C] text-white flex items-center justify-center text-2xl"><i class="fa-solid fa-gamepad"></i></div>
+    <div>
+        <h1 class="baloo text-3xl font-extrabold">O'yin va Mashqlar</h1>
+        <p class="text-gray-500 text-sm">Nutqni rivojlantirish uchun qiziqarli o'yinlar</p>
+    </div>
+</div>
+
+{% if exercises %}
+<div class="grid md:grid-cols-2 gap-4">
+    {% for ex in exercises %}
+    <div class="bubble-lg bg-white p-5 shadow-soft">
+        <span class="px-2 py-1 bubble bg-gray-100 text-xs font-bold">{{ ex.get_type_display }}</span>
+        <h3 class="baloo text-lg font-bold mt-2">{{ ex.title }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ ex.description }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bubble-lg bg-white p-10 text-center shadow-soft">
+    <div class="text-5xl mb-4">🎮</div>
+    <h3 class="baloo text-2xl font-bold">Tez kunda!</h3>
+    <p class="text-gray-500 text-sm">Qiziqarli o'yinlar admin tomonidan qo'shiladi</p>
+</div>
+{% endif %}
+{% endblock %}
